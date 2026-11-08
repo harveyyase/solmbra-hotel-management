@@ -1,0 +1,8 @@
+# Block sensitive folders
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(config|includes|storage)/ - [F,L]
+</IfModule>
+
+# Use index.php as the directory index
+DirectoryIndex index.php
