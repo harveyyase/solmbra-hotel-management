@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/login.css">
+<link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;">
 
@@ -89,5 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script src="assets/js/login.js"></script>
+<script src="assets/js/interactions.js" defer></script>
 </body>
 </html>

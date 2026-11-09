@@ -15,6 +15,7 @@ $u = require_login();
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/profile.css">
+<link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body>
 
@@ -93,5 +94,6 @@ $u = require_login();
 <!-- Load shared utilities then profile logic -->
 <script src="assets/js/util.js"></script>
 <script src="assets/js/profile.js"></script>
+<script src="assets/js/interactions.js" defer></script>
 </body>
 </html>

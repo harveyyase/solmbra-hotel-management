@@ -15,6 +15,7 @@ $u = require_login();
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="assets/css/base.css?v=99">
 <link rel="stylesheet" href="assets/css/dashboard.css?v=99">
+<link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body>
 
@@ -74,6 +75,7 @@ $u = require_login();
 <script src="assets/js/util.js"></script>
 <script src="assets/js/notifications.js"></script>
 <script src="assets/js/dashboard.js?v=99"></script>
+<script src="assets/js/interactions.js" defer></script>
 
 </body>
 </html>

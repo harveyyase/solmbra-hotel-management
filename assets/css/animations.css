@@ -1,0 +1,211 @@
+/* =============================================================
+   animations.css — motion layer for base / login / dashboard /
+   profile / contact.
+
+   Load it AFTER base.css and the page's own CSS. It only targets
+   selectors you already have, so no existing file needs editing.
+   Pairs with interactions.js, but everything here still works
+   (minus tilt, ripple, count-up and stagger) if the JS is absent.
+   ============================================================= */
+
+:root{
+  --fx-ease:cubic-bezier(.22,.8,.24,1);
+  --fx-spring:cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ---------- 1. Keyframes ---------- */
+@keyframes fx-drift{from{transform:translate3d(-3%,-2%,0) rotate(0)}to{transform:translate3d(3%,2%,0) rotate(8deg)}}
+@keyframes fx-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fx-fade{from{opacity:0}to{opacity:1}}
+@keyframes fx-fade-down{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes fx-slide-x{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+@keyframes fx-slide-down{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes fx-pop{0%{transform:scale(.4)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes fx-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes fx-glow{0%,100%{box-shadow:0 0 15px #c7a4f340}50%{box-shadow:0 0 28px #c7a4f38c}}
+@keyframes fx-ping{0%{box-shadow:0 0 0 0 #8de0b866}70%{box-shadow:0 0 0 7px #8de0b800}100%{box-shadow:0 0 0 0 #8de0b800}}
+@keyframes fx-ring{0%,100%{transform:rotate(0)}20%{transform:rotate(14deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-5deg)}}
+@keyframes fx-dropdown{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes fx-modal{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes fx-toast{from{opacity:0;transform:translateX(26px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes fx-shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(7px)}45%{transform:translateX(-5px)}60%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+@keyframes fx-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes fx-underline{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fx-ripple{to{transform:scale(1);opacity:0}}
+
+/* ---------- 2. Ambient background ---------- */
+/* Slowly drifting aurora behind everything */
+body::before{
+  content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 30% 30%,#7a45b030 0,transparent 32%),
+    radial-gradient(circle at 70% 65%,#4b2a7a30 0,transparent 34%);
+  animation:fx-drift 28s ease-in-out infinite alternate;
+  will-change:transform;
+}
+/* Soft glow that follows the cursor (position set by interactions.js) */
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(480px circle at var(--cx,-600px) var(--cy,-600px),#c7a4f312,transparent 60%);
+}
+
+/* ---------- 3. Page entrances ---------- */
+header{animation:fx-fade-down .5s var(--fx-ease) backwards}
+.intro,.page-intro{animation:fx-rise .55s var(--fx-ease) .08s backwards}
+footer{animation:fx-fade .8s ease .4s backwards}
+
+/* Login: children of the card rise in one after another */
+.auth-container > :not(.demo-badge){
+  animation:fx-rise .55s var(--fx-ease) backwards;
+  animation-delay:calc(var(--i,0)*70ms + 120ms);
+}
+.demo-badge{transition:box-shadow .3s}
+.auth-container:hover .demo-badge{box-shadow:0 4px 18px #8de0b829}
+.auth-container.fx-shake{animation:fx-shake .45s ease}
+
+/* Contact */
+.contact-page > .brand{animation:fx-fade-down .55s var(--fx-ease) backwards}
+.contact-card{animation:fx-rise .6s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*110ms + 150ms)}
+.contact-page > .back-link{animation:fx-fade .6s ease .5s backwards}
+
+/* Profile */
+.profile-summary{animation:fx-rise .6s var(--fx-ease) .15s backwards}
+.profile-details{animation:fx-rise .6s var(--fx-ease) .25s backwards}
+.edit-form.open{animation:fx-slide-down .35s var(--fx-ease)}
+
+/* Dashboard: whole folder fades, its sections cascade in */
+.folder-body.fx-swap{animation:fx-fade .25s ease}
+.folder-body.fx-swap > *{
+  animation:fx-rise .5s var(--fx-ease) backwards;
+  animation-delay:calc(var(--i,0)*55ms + 60ms);
+}
+tbody tr{animation:fx-slide-x .4s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*28ms)}
+.bar{transform-origin:bottom;animation:fx-grow .8s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*70ms + 150ms);transition:filter .2s,transform .2s}
+.bar:hover{transform:scaleY(1.06)}
+
+/* ---------- 4. Looping accents ---------- */
+.brand-icon{animation:fx-float 5s ease-in-out infinite}
+.avatar-ring{animation:fx-glow 3.5s ease-in-out infinite}
+.status-dot{animation:fx-ping 2s ease-out infinite}
+.badge{animation:fx-pop .5s var(--fx-spring) backwards}
+.pin-dot{transition:background .2s,border-color .2s,transform .2s}
+.pin-dot.filled{animation:fx-pop .3s var(--fx-spring)}
+
+/* ---------- 5. Cards: lift, 3D tilt, cursor spotlight ---------- */
+/* --rx / --ry / --mx / --my are written by interactions.js */
+.stat-card,.contact-card,.profile-summary,.dash-card,.report-card{
+  transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px));
+  transition:transform .18s ease-out,border-color .2s,box-shadow .2s;
+}
+.stat-card:hover,.contact-card:hover,.profile-summary:hover,.dash-card:hover,.report-card:hover{--lift:-3px}
+
+.stat-card,.contact-card,.profile-summary,.profile-details,.dash-card,.report-card{position:relative}
+.stat-card::before,.contact-card::before,.profile-summary::before,.profile-details::before,.dash-card::before,.report-card::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),#c7a4f31c,transparent 65%);
+}
+.stat-card:hover::before,.contact-card:hover::before,.profile-summary:hover::before,
+.profile-details:hover::before,.dash-card:hover::before,.report-card:hover::before{opacity:1}
+
+.stat-icon{transition:transform .3s var(--fx-spring)}
+.stat-card:hover .stat-icon{transform:scale(1.2) rotate(-8deg)}
+.profile-avatar{transition:transform .4s var(--fx-spring)}
+.profile-summary:hover .profile-avatar{transform:scale(1.07) rotate(-3deg)}
+.avatar-ring{transition:transform .4s var(--fx-spring)}
+.contact-card:hover .avatar-ring{transform:scale(1.06)}
+
+/* ---------- 6. Buttons: press, shine, ripple ---------- */
+.primary-btn,.secondary-btn,.btn-glass,.btn-submit,.btn-cancel,.submit-btn,.github-btn,
+.edit-btn,.save-btn,.cancel-btn,.mini-btn,.timer-preset,.back-link,.logout-btn,.btn-page,.folder-tab{
+  position:relative;overflow:hidden;
+  transition:background-color .2s,border-color .2s,color .2s,filter .2s,box-shadow .2s,
+             transform .18s var(--fx-ease),opacity .2s,height .2s;
+}
+.primary-btn:not(:disabled):hover,.btn-submit:not(:disabled):hover,.edit-btn:hover,.save-btn:hover,
+.github-btn:hover,.secondary-btn:hover,.btn-glass:hover,.back-link:hover{transform:translateY(-2px)}
+.mini-btn:not(:disabled):hover,.timer-preset:not(:disabled):hover{transform:translateY(-1px)}
+.primary-btn:active,.secondary-btn:active,.btn-glass:active,.btn-submit:active,.btn-cancel:active,
+.submit-btn:active,.github-btn:active,.edit-btn:active,.save-btn:active,.cancel-btn:active,
+.mini-btn:active,.timer-preset:active,.back-link:active,.logout-btn:active,.btn-page:active{transform:scale(.96)}
+.btn-page:disabled:active,.btn-submit:disabled:active,.btn-cancel:disabled:active{transform:none}
+
+/* Light sweep across the main call-to-action buttons */
+.primary-btn::after,.submit-btn::after,.github-btn::after,.btn-submit::after,.edit-btn::after,.save-btn::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(110deg,transparent 30%,#ffffff2e 50%,transparent 70%);
+  transform:translateX(-120%);transition:transform .7s var(--fx-ease);
+}
+.primary-btn:hover::after,.submit-btn:hover::after,.github-btn:hover::after,
+.btn-submit:hover::after,.edit-btn:hover::after,.save-btn:hover::after{transform:translateX(120%)}
+
+.fx-ripple{
+  position:absolute;border-radius:50%;background:#ffffff40;pointer-events:none;
+  transform:scale(0);animation:fx-ripple .6s ease-out forwards;
+}
+
+/* Icons inside buttons get a little life */
+.back-link i,.btn-glass i,.primary-btn i,.secondary-btn i,.logout-btn i,.icon-btn i{display:inline-block;transition:transform .25s var(--fx-ease)}
+.back-link:hover i:first-child{transform:translateX(-3px)}
+.btn-glass:hover i,.secondary-btn:hover i{transform:scale(1.2) rotate(-6deg)}
+.logout-btn:hover i{transform:translateX(3px)}
+
+/* Round icon buttons + avatar */
+.icon-btn,.avatar{transition:background-color .2s,border-color .2s,box-shadow .2s,transform .25s var(--fx-spring)}
+.icon-btn:hover,.avatar:hover{transform:scale(1.1)}
+.icon-btn:active,.avatar:active{transform:scale(.94)}
+.icon-btn:hover i,.icon-btn:hover svg{animation:fx-ring .6s ease;transform-origin:50% 0}
+.modal-close{transition:transform .25s var(--fx-spring),color .2s}
+.modal-close:hover{transform:rotate(90deg)}
+.toggle-eye{transition:color .2s,transform .2s var(--fx-spring)}
+.toggle-eye:hover{transform:scale(1.15)}
+
+/* ---------- 7. Tabs, rows, lists ---------- */
+.folder-icon{display:inline-block;transition:transform .25s var(--fx-spring)}
+.folder-tab:hover .folder-icon{transform:translateY(-2px) rotate(-8deg) scale(1.1)}
+.folder-tab.active::after{transform-origin:left;animation:fx-underline .35s var(--fx-ease)}
+
+tbody tr{transition:background-color .2s}
+tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--purple-light)}
+.status{transition:transform .2s var(--fx-spring)}
+tbody tr:hover .status{transform:scale(1.07)}
+
+.task-row,.activity-item{transition:transform .2s var(--fx-ease)}
+.task-row:hover,.activity-item:hover{transform:translateX(3px)}
+.inbox-item{transition:background-color .2s,padding-left .2s var(--fx-ease)}
+.inbox-item:hover{padding-left:18px}
+.detail-row{transition:background-color .2s,border-color .2s,transform .2s var(--fx-ease)}
+.detail-row:hover{transform:translateX(4px)}
+.detail-icon{transition:transform .3s var(--fx-spring)}
+.detail-row:hover .detail-icon{transform:rotate(-8deg) scale(1.12)}
+.field{transition:border-color .2s,transform .2s var(--fx-ease)}
+.field:hover{border-color:#5b3d78;transform:translateY(-2px)}
+
+/* ---------- 8. Inputs ---------- */
+.form-group input,.form-group select,.input-wrap input,.login-card input,.section-search{
+  transition:border-color .2s,box-shadow .25s,transform .2s var(--fx-ease),background-color .2s;
+}
+.form-group input:focus,.form-group select:focus,.input-wrap input:focus{transform:translateY(-1px)}
+.section-search:focus-within{box-shadow:0 0 0 3px #8755b522}
+.section-search input{transition:width .3s var(--fx-ease)}
+.section-search input:focus{width:240px}
+.input-wrap .input-icon{transition:color .2s,transform .25s var(--fx-spring)}
+.input-wrap:focus-within .input-icon{transform:scale(1.18)}
+.archive-toggle-thumb{transition:transform .3s var(--fx-spring),background-color .2s}
+
+/* ---------- 9. Overlays: dropdown, modals, toasts ---------- */
+.inbox-dropdown.open{transform-origin:top right;animation:fx-dropdown .22s var(--fx-ease)}
+.inbox-dropdown.open .inbox-item{animation:fx-slide-x .3s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*40ms + 80ms)}
+.modal-overlay.open{animation:fx-fade .2s ease}
+.modal{animation:fx-modal .3s var(--fx-spring)}
+.login-overlay.open{animation:fx-fade .2s ease}
+.login-card{animation:fx-modal .3s var(--fx-spring)}
+.toast{animation:fx-toast .35s var(--fx-spring)}
+.toast.out{transform:translateX(26px)}
+
+/* ---------- 10. Reduced motion ---------- */
+/* base.css already shortens durations; this also stops loops and decoration. */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-iteration-count:1!important}
+  body::before,body::after,.fx-ripple{display:none!important}
+  .stat-card,.contact-card,.profile-summary,.dash-card,.report-card{transform:none!important}
+}
