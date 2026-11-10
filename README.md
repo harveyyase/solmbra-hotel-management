@@ -96,27 +96,18 @@ This project was built with security-first principles:
 ## 📷 Screenshots
 
 1.Dashboard
-
+<img width="1920" height="1080" alt="Dashboard" src="assets/img/Dashboard.png" alt="Dashboard Tab"/>
 2.Reservation
-
+<img width="1920" height="1080" alt="Reservations" src="assets/img/Reservations.png" alt="Reservation Tab"/>
 3.Rooms
-
+<img width="1920" height="1080" alt="Rooms" src="assets/img/Rooms.png" alt="Rooms Tab"/>
 4.Guests
-
+<img width="1920" height="1080" alt="Guests" src="assets/img/Guests.png" alt="Guests Tab"/>
 5.Staff
-
+<img width="1920" height="1080" alt="Staff" src="assets/img/Staff.png" alt="Staff Tab"/>
 6.Payments
-
+<img width="1920" height="1080" alt="Payments" src="assets/img/Payments.png" alt="Payments Tab"/>
 7.Reports
-
+<img width="1920" height="1080" alt="Reports" src="assets/img/Reports.png" alt="Reports Tab"/>
 8.Account
-
-<img width="1920" height="1080" alt="Reservations" src="https://github.com/user-attachments/assets/903d8264-6aa4-4c10-b461-08b1baa666ec" />
-<img width="1920" height="1080" alt="Rooms" src="https://github.com/user-attachments/assets/d58070b0-d376-44b7-b43a-1203d0371d30" />
-<img width="1920" height="1080" alt="Guests" src="https://github.com/user-attachments/assets/69e2a184-cf98-48cb-8310-54038b0c2311" />
-<img width="1920" height="1080" alt="Staff" src="https://github.com/user-attachments/assets/bf165f20-8a69-4a1b-9c33-b0e301c19320" />
-<img width="1920" height="1080" alt="Payments" src="https://github.com/user-attachments/assets/7f58113f-0744-4c50-96b7-a9c67bac7b14" />
-<img width="1920" height="1080" alt="Reports" src="https://github.com/user-attachments/assets/a227ed2f-9f34-427a-b952-09eb0b4d9dde" />
-<img width="1920" height="1080" alt="Account" src="https://github.com/user-attachments/assets/c677a4b0-825e-4022-9c27-e2ed67dc4b8d" />
-<img width="1920" height="1080" alt="Login" src="https://github.com/user-attachments/assets/76bfc703-f95d-42aa-9904-c6829c1b25c4" />
-<img width="1920" height="1080" alt="Dashboard" src="https://github.com/user-attachments/assets/18008e17-d28a-464e-a115-2c25dbd1209a" />
+<img width="1920" height="1080" alt="Account" src="assets/img/Account.png" alt="Account Tab"/>
