@@ -1,211 +1,523 @@
-/* =============================================================
-   animations.css — motion layer for base / login / dashboard /
-   profile / contact.
-
-   Load it AFTER base.css and the page's own CSS. It only targets
-   selectors you already have, so no existing file needs editing.
-   Pairs with interactions.js, but everything here still works
-   (minus tilt, ripple, count-up and stagger) if the JS is absent.
-   ============================================================= */
+/* ==========================================================================
+   SOLMBRA — animations.css  (pure CSS, no JS needed)
+   Drop into: assets/css/animations.css   (already linked LAST on every page)
+   Palette is untouched: only your existing purples / accent / success are used.
+   Rule of thumb used here: entrance animations use `backwards` fill so they
+   never fight your hover transforms afterwards.
+   ========================================================================== */
 
 :root{
-  --fx-ease:cubic-bezier(.22,.8,.24,1);
-  --fx-spring:cubic-bezier(.34,1.56,.64,1);
+  --sx-ease:   cubic-bezier(.22,1,.36,1);
+  --sx-spring: cubic-bezier(.34,1.56,.64,1);
+  --sx-accent: var(--accent,#c7a4f3);
+  --sx-purple: var(--purple-light,#8755b5);
+  --sx-text:   var(--text,#f4eff9);
+  --sx-muted:  var(--muted,#a69bb2);
 }
 
-/* ---------- 1. Keyframes ---------- */
-@keyframes fx-drift{from{transform:translate3d(-3%,-2%,0) rotate(0)}to{transform:translate3d(3%,2%,0) rotate(8deg)}}
-@keyframes fx-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes fx-fade{from{opacity:0}to{opacity:1}}
-@keyframes fx-fade-down{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
-@keyframes fx-slide-x{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
-@keyframes fx-slide-down{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-@keyframes fx-pop{0%{transform:scale(.4)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
-@keyframes fx-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes fx-glow{0%,100%{box-shadow:0 0 15px #c7a4f340}50%{box-shadow:0 0 28px #c7a4f38c}}
-@keyframes fx-ping{0%{box-shadow:0 0 0 0 #8de0b866}70%{box-shadow:0 0 0 7px #8de0b800}100%{box-shadow:0 0 0 0 #8de0b800}}
-@keyframes fx-ring{0%,100%{transform:rotate(0)}20%{transform:rotate(14deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-5deg)}}
-@keyframes fx-dropdown{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
-@keyframes fx-modal{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
-@keyframes fx-toast{from{opacity:0;transform:translateX(26px) scale(.96)}to{opacity:1;transform:none}}
-@keyframes fx-shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(7px)}45%{transform:translateX(-5px)}60%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
-@keyframes fx-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-@keyframes fx-underline{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes fx-ripple{to{transform:scale(1);opacity:0}}
+html{scroll-behavior:smooth}
+::selection{background:rgba(135,85,181,.5);color:var(--sx-text)}
+:focus-visible{outline:2px solid var(--sx-accent);outline-offset:3px}
 
-/* ---------- 2. Ambient background ---------- */
-/* Slowly drifting aurora behind everything */
+/* Slim themed scrollbars */
+*{scrollbar-width:thin;scrollbar-color:#4a3160 transparent}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#4a3160;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:var(--sx-purple)}
+
+/* ==========================================================================
+   KEYFRAMES
+   ========================================================================== */
+@keyframes sx-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes sx-drop{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+@keyframes sx-fade{from{opacity:0}to{opacity:1}}
+@keyframes sx-fade-b{from{opacity:0}to{opacity:1}}
+@keyframes sx-left{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes sx-right{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes sx-pop{0%{opacity:0;transform:scale(.86)}60%{transform:scale(1.04)}100%{opacity:1;transform:none}}
+@keyframes sx-row{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes sx-topbar{0%{transform:scaleX(0);opacity:1}70%{transform:scaleX(.96);opacity:1}100%{transform:scaleX(1);opacity:0}}
+@keyframes sx-aurora{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-4%,3%,0) scale(1.14)}}
+@keyframes sx-authin{from{opacity:0;transform:translateY(40px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes sx-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes sx-glow{0%,100%{filter:drop-shadow(0 0 0 rgba(199,164,243,0))}50%{filter:drop-shadow(0 0 16px rgba(199,164,243,.5))}}
+@keyframes sx-track{from{opacity:0;letter-spacing:.45em}to{opacity:1}}
+@keyframes sx-textshine{to{background-position:-200% 0}}
+@keyframes sx-dot{0%,100%{transform:scale(.7);opacity:.45}50%{transform:scale(1.15);opacity:1}}
+@keyframes sx-btnpulse{0%,100%{box-shadow:0 0 0 0 rgba(135,85,181,.0)}50%{box-shadow:0 0 0 6px rgba(135,85,181,.22)}}
+@keyframes sx-spin{to{transform:rotate(360deg)}}
+@keyframes sx-skel{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes sx-sweep{from{transform:translateX(0)}to{transform:translateX(380%)}}
+@keyframes sx-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg) scale(1.15)}75%{transform:rotate(12deg) scale(1.15)}}
+@keyframes sx-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes sx-ring{0%{box-shadow:0 0 0 0 rgba(199,164,243,.4)}70%,100%{box-shadow:0 0 0 18px rgba(199,164,243,0)}}
+@keyframes sx-live{0%{box-shadow:0 0 0 0 rgba(141,224,184,.55)}70%,100%{box-shadow:0 0 0 8px rgba(141,224,184,0)}}
+@keyframes sx-badge{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@keyframes sx-bell{0%,100%{transform:rotate(0)}15%{transform:rotate(16deg)}30%{transform:rotate(-14deg)}45%{transform:rotate(10deg)}60%{transform:rotate(-8deg)}75%{transform:rotate(4deg)}}
+@keyframes sx-dropdown{from{opacity:0;transform:translateY(-8px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes sx-dropdown-b{from{opacity:0;transform:translateY(-8px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes sx-modal{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes sx-modal-b{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes sx-toast{from{opacity:0;transform:translateX(44px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes sx-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes sx-nudge{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes sx-edit{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+
+/* ==========================================================================
+   GLOBAL — page-load progress bar + drifting ambient glow
+   ========================================================================== */
+html::before{
+  content:"";position:fixed;top:0;left:0;width:100%;height:3px;z-index:9999;
+  pointer-events:none;transform-origin:left;
+  background:linear-gradient(90deg,var(--purple,#58327b),var(--sx-purple),var(--sx-accent));
+  box-shadow:0 0 12px rgba(199,164,243,.7);
+  animation:sx-topbar 1.2s var(--sx-ease) both;
+}
 body::before{
-  content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;
+  content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;will-change:transform;
   background:
-    radial-gradient(circle at 30% 30%,#7a45b030 0,transparent 32%),
-    radial-gradient(circle at 70% 65%,#4b2a7a30 0,transparent 34%);
-  animation:fx-drift 28s ease-in-out infinite alternate;
-  will-change:transform;
-}
-/* Soft glow that follows the cursor (position set by interactions.js) */
-body::after{
-  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(480px circle at var(--cx,-600px) var(--cy,-600px),#c7a4f312,transparent 60%);
+    radial-gradient(circle at 20% 30%,rgba(81,43,114,.32),transparent 42%),
+    radial-gradient(circle at 80% 70%,rgba(52,32,78,.38),transparent 46%);
+  animation:sx-aurora 28s ease-in-out infinite alternate;
 }
 
-/* ---------- 3. Page entrances ---------- */
-header{animation:fx-fade-down .5s var(--fx-ease) backwards}
-.intro,.page-intro{animation:fx-rise .55s var(--fx-ease) .08s backwards}
-footer{animation:fx-fade .8s ease .4s backwards}
+/* ==========================================================================
+   SHARED LAYOUT ENTRANCES (dashboard + profile)
+   ========================================================================== */
+.app > header{animation:sx-drop .7s var(--sx-ease) backwards}
+.intro,.page-intro{animation:sx-rise .7s .1s var(--sx-ease) backwards}
+.eyebrow{animation:sx-track 1s .2s var(--sx-ease) backwards}
+.page-intro h2{animation:sx-rise .7s .2s var(--sx-ease) backwards}
+.page-intro p{animation:sx-rise .7s .3s var(--sx-ease) backwards}
+.app > footer{animation:sx-fade 1s .9s backwards}
+.note{animation:sx-fade 1s 1s backwards}
+.date{animation:sx-fade 1s .5s backwards}
 
-/* Login: children of the card rise in one after another */
-.auth-container > :not(.demo-badge){
-  animation:fx-rise .55s var(--fx-ease) backwards;
-  animation-delay:calc(var(--i,0)*70ms + 120ms);
+.hero-actions > *{animation:sx-pop .6s var(--sx-spring) backwards}
+.hero-actions > *:nth-child(1){animation-delay:.25s}
+.hero-actions > *:nth-child(2){animation-delay:.35s}
+.hero-actions > *:nth-child(3){animation-delay:.45s}
+
+/* Logo + brand */
+.brand-icon img{
+  transition:transform .5s var(--sx-spring);
+  animation:sx-pop .9s .15s var(--sx-spring) backwards, sx-glow 4.5s 1.4s ease-in-out infinite;
 }
-.demo-badge{transition:box-shadow .3s}
-.auth-container:hover .demo-badge{box-shadow:0 4px 18px #8de0b829}
-.auth-container.fx-shake{animation:fx-shake .45s ease}
+.brand:hover .brand-icon img{transform:rotate(-8deg) scale(1.08)}
+.brand h1{animation:sx-track 1s .3s var(--sx-ease) backwards}
 
-/* Contact */
-.contact-page > .brand{animation:fx-fade-down .55s var(--fx-ease) backwards}
-.contact-card{animation:fx-rise .6s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*110ms + 150ms)}
-.contact-page > .back-link{animation:fx-fade .6s ease .5s backwards}
+/* ==========================================================================
+   DASHBOARD — tabs, content, cards, tables
+   ========================================================================== */
+.folder-area{animation:sx-rise .8s .2s var(--sx-ease) backwards}
 
-/* Profile */
-.profile-summary{animation:fx-rise .6s var(--fx-ease) .15s backwards}
-.profile-details{animation:fx-rise .6s var(--fx-ease) .25s backwards}
-.edit-form.open{animation:fx-slide-down .35s var(--fx-ease)}
-
-/* Dashboard: whole folder fades, its sections cascade in */
-.folder-body.fx-swap{animation:fx-fade .25s ease}
-.folder-body.fx-swap > *{
-  animation:fx-rise .5s var(--fx-ease) backwards;
-  animation-delay:calc(var(--i,0)*55ms + 60ms);
+.folder-tab{
+  transition:transform .3s var(--sx-ease),filter .3s,box-shadow .3s;
+  animation:sx-rise .5s var(--sx-ease) backwards;
 }
-tbody tr{animation:fx-slide-x .4s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*28ms)}
-.bar{transform-origin:bottom;animation:fx-grow .8s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*70ms + 150ms);transition:filter .2s,transform .2s}
-.bar:hover{transform:scaleY(1.06)}
+.folder-tab:nth-child(1){animation-delay:.30s}
+.folder-tab:nth-child(2){animation-delay:.36s}
+.folder-tab:nth-child(3){animation-delay:.42s}
+.folder-tab:nth-child(4){animation-delay:.48s}
+.folder-tab:nth-child(5){animation-delay:.54s}
+.folder-tab:nth-child(6){animation-delay:.60s}
+.folder-tab:nth-child(7){animation-delay:.66s}
+.folder-tab:hover{transform:translateY(-3px);filter:brightness(1.12)}
+.folder-tab:active{transform:translateY(0) scale(.97)}
+.folder-tab:hover .folder-icon{animation:sx-wiggle .6s ease}
+.folder-tab.active .folder-icon{display:inline-block;animation:sx-bob 2.4s ease-in-out infinite}
+.folder-icon{display:inline-block}
 
-/* ---------- 4. Looping accents ---------- */
-.brand-icon{animation:fx-float 5s ease-in-out infinite}
-.avatar-ring{animation:fx-glow 3.5s ease-in-out infinite}
-.status-dot{animation:fx-ping 2s ease-out infinite}
-.badge{animation:fx-pop .5s var(--fx-spring) backwards}
-.pin-dot{transition:background .2s,border-color .2s,transform .2s}
-.pin-dot.filled{animation:fx-pop .3s var(--fx-spring)}
+/* Every tab switch re-renders #page-content, so these replay as page transitions */
+#page-content > *{animation:sx-rise .55s var(--sx-ease) backwards}
+#page-content > :nth-child(1){animation-delay:.04s}
+#page-content > :nth-child(2){animation-delay:.10s}
+#page-content > :nth-child(3){animation-delay:.16s}
+#page-content > :nth-child(4){animation-delay:.22s}
+#page-content > :nth-child(5){animation-delay:.28s}
+#page-content > :nth-child(n+6){animation-delay:.34s}
 
-/* ---------- 5. Cards: lift, 3D tilt, cursor spotlight ---------- */
-/* --rx / --ry / --mx / --my are written by interactions.js */
-.stat-card,.contact-card,.profile-summary,.dash-card,.report-card{
-  transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px));
-  transition:transform .18s ease-out,border-color .2s,box-shadow .2s;
+/* Grids of cards / stats pop in one after another */
+#page-content :is(.grid,.cards,.stats,.stat-grid,.kpis,[class*="grid"],[class*="cards"]) > *{
+  animation:sx-pop .55s var(--sx-spring) backwards;
 }
-.stat-card:hover,.contact-card:hover,.profile-summary:hover,.dash-card:hover,.report-card:hover{--lift:-3px}
+#page-content :is(.grid,.cards,.stats,.stat-grid,.kpis,[class*="grid"],[class*="cards"]) > :nth-child(1){animation-delay:.10s}
+#page-content :is(.grid,.cards,.stats,.stat-grid,.kpis,[class*="grid"],[class*="cards"]) > :nth-child(2){animation-delay:.18s}
+#page-content :is(.grid,.cards,.stats,.stat-grid,.kpis,[class*="grid"],[class*="cards"]) > :nth-child(3){animation-delay:.26s}
+#page-content :is(.grid,.cards,.stats,.stat-grid,.kpis,[class*="grid"],[class*="cards"]) > :nth-child(4){animation-delay:.34s}
+#page-content :is(.grid,.cards,.stats,.stat-grid,.kpis,[class*="grid"],[class*="cards"]) > :nth-child(n+5){animation-delay:.42s}
 
-.stat-card,.contact-card,.profile-summary,.profile-details,.dash-card,.report-card{position:relative}
-.stat-card::before,.contact-card::before,.profile-summary::before,.profile-details::before,.dash-card::before,.report-card::before{
-  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
-  background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),#c7a4f31c,transparent 65%);
+/* Card hover lift */
+:is(.card,[class$="-card"],[class*="-card "],.stat,.stat-card,.kpi,.kpi-card,.metric,.tile,.summary-card){
+  transition:transform .3s var(--sx-ease),box-shadow .3s,border-color .3s;
 }
-.stat-card:hover::before,.contact-card:hover::before,.profile-summary:hover::before,
-.profile-details:hover::before,.dash-card:hover::before,.report-card:hover::before{opacity:1}
-
-.stat-icon{transition:transform .3s var(--fx-spring)}
-.stat-card:hover .stat-icon{transform:scale(1.2) rotate(-8deg)}
-.profile-avatar{transition:transform .4s var(--fx-spring)}
-.profile-summary:hover .profile-avatar{transform:scale(1.07) rotate(-3deg)}
-.avatar-ring{transition:transform .4s var(--fx-spring)}
-.contact-card:hover .avatar-ring{transform:scale(1.06)}
-
-/* ---------- 6. Buttons: press, shine, ripple ---------- */
-.primary-btn,.secondary-btn,.btn-glass,.btn-submit,.btn-cancel,.submit-btn,.github-btn,
-.edit-btn,.save-btn,.cancel-btn,.mini-btn,.timer-preset,.back-link,.logout-btn,.btn-page,.folder-tab{
-  position:relative;overflow:hidden;
-  transition:background-color .2s,border-color .2s,color .2s,filter .2s,box-shadow .2s,
-             transform .18s var(--fx-ease),opacity .2s,height .2s;
-}
-.primary-btn:not(:disabled):hover,.btn-submit:not(:disabled):hover,.edit-btn:hover,.save-btn:hover,
-.github-btn:hover,.secondary-btn:hover,.btn-glass:hover,.back-link:hover{transform:translateY(-2px)}
-.mini-btn:not(:disabled):hover,.timer-preset:not(:disabled):hover{transform:translateY(-1px)}
-.primary-btn:active,.secondary-btn:active,.btn-glass:active,.btn-submit:active,.btn-cancel:active,
-.submit-btn:active,.github-btn:active,.edit-btn:active,.save-btn:active,.cancel-btn:active,
-.mini-btn:active,.timer-preset:active,.back-link:active,.logout-btn:active,.btn-page:active{transform:scale(.96)}
-.btn-page:disabled:active,.btn-submit:disabled:active,.btn-cancel:disabled:active{transform:none}
-
-/* Light sweep across the main call-to-action buttons */
-.primary-btn::after,.submit-btn::after,.github-btn::after,.btn-submit::after,.edit-btn::after,.save-btn::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(110deg,transparent 30%,#ffffff2e 50%,transparent 70%);
-  transform:translateX(-120%);transition:transform .7s var(--fx-ease);
-}
-.primary-btn:hover::after,.submit-btn:hover::after,.github-btn:hover::after,
-.btn-submit:hover::after,.edit-btn:hover::after,.save-btn:hover::after{transform:translateX(120%)}
-
-.fx-ripple{
-  position:absolute;border-radius:50%;background:#ffffff40;pointer-events:none;
-  transform:scale(0);animation:fx-ripple .6s ease-out forwards;
+:is(.card,[class$="-card"],[class*="-card "],.stat,.stat-card,.kpi,.kpi-card,.metric,.tile,.summary-card):hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 34px rgba(0,0,0,.45),0 0 0 1px rgba(199,164,243,.22);
 }
 
-/* Icons inside buttons get a little life */
-.back-link i,.btn-glass i,.primary-btn i,.secondary-btn i,.logout-btn i,.icon-btn i{display:inline-block;transition:transform .25s var(--fx-ease)}
-.back-link:hover i:first-child{transform:translateX(-3px)}
-.btn-glass:hover i,.secondary-btn:hover i{transform:scale(1.2) rotate(-6deg)}
-.logout-btn:hover i{transform:translateX(3px)}
+/* Table rows: staggered reveal + accent edge on hover */
+#page-content tbody tr{animation:sx-row .45s var(--sx-ease) backwards}
+#page-content tbody tr:nth-child(1){animation-delay:.12s}
+#page-content tbody tr:nth-child(2){animation-delay:.17s}
+#page-content tbody tr:nth-child(3){animation-delay:.22s}
+#page-content tbody tr:nth-child(4){animation-delay:.27s}
+#page-content tbody tr:nth-child(5){animation-delay:.32s}
+#page-content tbody tr:nth-child(6){animation-delay:.37s}
+#page-content tbody tr:nth-child(7){animation-delay:.42s}
+#page-content tbody tr:nth-child(8){animation-delay:.47s}
+#page-content tbody tr:nth-child(n+9){animation-delay:.5s}
+#page-content tbody td{transition:background-color .2s,box-shadow .2s}
+#page-content tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--sx-accent)}
+#page-content tbody tr:hover td{filter:brightness(1.12)}
 
-/* Round icon buttons + avatar */
-.icon-btn,.avatar{transition:background-color .2s,border-color .2s,box-shadow .2s,transform .25s var(--fx-spring)}
-.icon-btn:hover,.avatar:hover{transform:scale(1.1)}
-.icon-btn:active,.avatar:active{transform:scale(.94)}
-.icon-btn:hover i,.icon-btn:hover svg{animation:fx-ring .6s ease;transform-origin:50% 0}
-.modal-close{transition:transform .25s var(--fx-spring),color .2s}
-.modal-close:hover{transform:rotate(90deg)}
-.toggle-eye{transition:color .2s,transform .2s var(--fx-spring)}
-.toggle-eye:hover{transform:scale(1.15)}
+/* Progress / fill bars grow from the left */
+#page-content [class*="fill"]{transform-origin:left;animation:sx-grow .9s .2s var(--sx-ease) backwards}
+@keyframes sx-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-/* ---------- 7. Tabs, rows, lists ---------- */
-.folder-icon{display:inline-block;transition:transform .25s var(--fx-spring)}
-.folder-tab:hover .folder-icon{transform:translateY(-2px) rotate(-8deg) scale(1.1)}
-.folder-tab.active::after{transform-origin:left;animation:fx-underline .35s var(--fx-ease)}
+/* Header icons */
+.icon-btn{transition:transform .25s var(--sx-ease),box-shadow .25s}
+.icon-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(88,50,123,.5)}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn:hover i{display:inline-block;animation:sx-bell .8s ease;transform-origin:50% 0}
+.inbox-wrap .badge{animation:sx-pop .5s var(--sx-spring) backwards, sx-badge 1.8s 1s ease-in-out infinite}
 
-tbody tr{transition:background-color .2s}
-tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--purple-light)}
-.status{transition:transform .2s var(--fx-spring)}
-tbody tr:hover .status{transform:scale(1.07)}
+.avatar{transition:transform .35s var(--sx-spring),box-shadow .35s}
+.avatar:hover{transform:scale(1.1) rotate(6deg);box-shadow:0 0 0 4px rgba(199,164,243,.22)}
+.avatar:active{transform:scale(.95)}
 
-.task-row,.activity-item{transition:transform .2s var(--fx-ease)}
-.task-row:hover,.activity-item:hover{transform:translateX(3px)}
-.inbox-item{transition:background-color .2s,padding-left .2s var(--fx-ease)}
-.inbox-item:hover{padding-left:18px}
-.detail-row{transition:background-color .2s,border-color .2s,transform .2s var(--fx-ease)}
+/* Notification dropdown */
+.inbox-dropdown{transform-origin:top right;animation:sx-dropdown .28s var(--sx-ease)}
+.inbox-dropdown:is(.open,.show,.active,.visible){animation-name:sx-dropdown-b}
+.inbox-list > *{animation:sx-row .4s var(--sx-ease) backwards}
+.inbox-list > :nth-child(1){animation-delay:.05s}
+.inbox-list > :nth-child(2){animation-delay:.10s}
+.inbox-list > :nth-child(3){animation-delay:.15s}
+.inbox-list > :nth-child(4){animation-delay:.20s}
+.inbox-list > :nth-child(n+5){animation-delay:.25s}
+.inbox-list > *{transition:transform .2s,filter .2s}
+.inbox-list > *:hover{transform:translateX(4px);filter:brightness(1.15)}
+.inbox-header button{transition:transform .2s,color .2s}
+.inbox-header button:hover{transform:scale(1.06);color:var(--sx-accent)}
+.inbox-list:empty::before{
+  content:"You're all caught up ✨";display:block;padding:28px 16px;text-align:center;
+  font-size:12px;color:var(--sx-muted);animation:sx-fade .6s ease;
+}
+
+/* Modals (covers the common class names; replays each time one opens) */
+:is(.modal-overlay,.modal-backdrop,.modal-bg,.modal-wrap){animation:sx-fade .25s ease}
+:is(.modal-overlay,.modal-backdrop,.modal-bg,.modal-wrap):is(.open,.show,.active,.visible){animation-name:sx-fade-b}
+:is(.modal-content,.modal-box,.modal-card,.modal-dialog,[role="dialog"],.modal:not(:has(.modal-content,.modal-box,.modal-card,.modal-dialog,[role="dialog"]))){
+  animation:sx-modal .4s var(--sx-spring);
+}
+:is(.modal-content,.modal-box,.modal-card,.modal-dialog,[role="dialog"],.modal:not(:has(.modal-content,.modal-box,.modal-card,.modal-dialog,[role="dialog"]))):is(.open,.show,.active,.visible){
+  animation-name:sx-modal-b;
+}
+.modal .form-group{animation:sx-rise .45s var(--sx-ease) backwards}
+.modal .form-group:nth-of-type(1){animation-delay:.10s}
+.modal .form-group:nth-of-type(2){animation-delay:.16s}
+.modal .form-group:nth-of-type(3){animation-delay:.22s}
+.modal .form-group:nth-of-type(4){animation-delay:.28s}
+.modal .form-group:nth-of-type(n+5){animation-delay:.34s}
+
+/* Toasts */
+#toastStack > *,.toast{animation:sx-toast .5s var(--sx-spring) backwards}
+
+/* ==========================================================================
+   BUTTONS (all pages)
+   ========================================================================== */
+:is(.submit-btn,.primary-btn,.secondary-btn,.save-btn,.cancel-btn,.edit-btn,.logout-btn,.github-btn,.back-link){
+  transition:transform .25s var(--sx-ease),box-shadow .25s,filter .25s;
+}
+:is(.submit-btn,.primary-btn,.save-btn,.secondary-btn,.edit-btn,.cancel-btn):hover{transform:translateY(-2px)}
+:is(.submit-btn,.primary-btn,.save-btn):hover{box-shadow:0 10px 24px rgba(88,50,123,.55)}
+:is(.submit-btn,.primary-btn,.save-btn,.secondary-btn,.logout-btn,.edit-btn,.cancel-btn):active{transform:translateY(0) scale(.97)}
+.back-link:hover{transform:translateX(-4px)}
+.logout-btn i{display:inline-block;transition:transform .25s var(--sx-ease)}
+.logout-btn:hover i{transform:translateX(4px)}
+#refreshBtn i{display:inline-block;transition:transform .6s var(--sx-ease)}
+#refreshBtn:hover i{transform:rotate(180deg)}
+#exportBtn i,#heroActionBtn i{display:inline-block;transition:transform .3s var(--sx-spring)}
+#exportBtn:hover i{transform:translateY(-2px)}
+#heroActionBtn:hover i{transform:rotate(90deg) scale(1.15)}
+
+/* Light sweep on primary buttons */
+:is(.submit-btn,.primary-btn,.save-btn){position:relative;overflow:hidden}
+:is(.submit-btn,.primary-btn,.save-btn)::after{
+  content:"";position:absolute;top:0;left:-120%;width:55%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.2),transparent);
+  transform:skewX(-20deg);transition:left .7s var(--sx-ease);
+}
+:is(.submit-btn,.primary-btn,.save-btn):hover::after{left:140%}
+
+/* ==========================================================================
+   LOADING STATES
+   Hook up with zero JS changes where possible:
+     - disabled submit/save buttons automatically show a spinner
+     - add class "is-loading" (or aria-busy="true") to any button to get one
+   ========================================================================== */
+:is(button,.submit-btn,.primary-btn,.secondary-btn,.save-btn,.logout-btn).is-loading,
+button[aria-busy="true"],
+:is(.submit-btn,.save-btn):disabled{
+  position:relative;pointer-events:none;color:transparent !important;
+  text-shadow:none;cursor:progress;
+}
+:is(button,.submit-btn,.primary-btn,.secondary-btn,.save-btn,.logout-btn).is-loading::before,
+button[aria-busy="true"]::before,
+:is(.submit-btn,.save-btn):disabled::before{
+  content:"";position:absolute;top:50%;left:50%;width:18px;height:18px;margin:-9px 0 0 -9px;
+  border:2px solid rgba(244,239,249,.28);border-top-color:var(--sx-text);border-radius:50%;
+  animation:sx-spin .7s linear infinite;
+}
+:is(.submit-btn,.primary-btn,.save-btn).is-loading::after,
+:is(.submit-btn,.save-btn):disabled::after{opacity:0}
+:is(.submit-btn,.save-btn):disabled i,
+.is-loading i{opacity:0}
+
+/* Refresh button spins while busy */
+#refreshBtn.is-loading i,#refreshBtn[aria-busy="true"] i{opacity:1;animation:sx-spin .8s linear infinite}
+
+/* ---- Data-loading skeletons --------------------------------------------
+   Shown while #page-content is empty (JS hasn't rendered yet) or whenever you
+   mark it busy with class "is-loading" or aria-busy="true". The layout
+   changes to match the active tab (table / dashboard / rooms / reports).
+   ------------------------------------------------------------------------ */
+:root{--sx-sk:linear-gradient(#1a1225,#1a1225);--sx-sk2:linear-gradient(#24182f,#24182f)}
+
+#page-content:is(:empty,.is-loading,[aria-busy="true"]){position:relative;min-height:380px;overflow:hidden}
+#page-content:is(.is-loading,[aria-busy="true"]){opacity:1;pointer-events:auto}
+#page-content:is(.is-loading,[aria-busy="true"]) > *{opacity:0 !important;visibility:hidden;animation:none}
+
+/* default = table pages (reservations, guests, staff, payments) */
+#page-content:is(:empty,.is-loading,[aria-busy="true"])::before{
+  content:"";position:absolute;inset:24px;background-repeat:no-repeat;
+  background-image:var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk2),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk);
+  background-size:30% 26px,14% 34px,40% 40px,100% 20px,100% 38px,100% 38px,100% 38px,100% 38px,100% 38px;
+  background-position:0 0,100% 0,0 52px,0 112px,0 144px,0 192px,0 240px,0 288px,0 336px;
+  animation:sx-skel 1.4s ease-in-out infinite;
+}
+/* dashboard */
+.folder-area:has(.folder-tab.active[data-page="dashboard"]) #page-content:is(:empty,.is-loading,[aria-busy="true"])::before{
+  background-image:var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk);
+  background-size:34% 26px,23.5% 104px,23.5% 104px,23.5% 104px,23.5% 104px,60% 210px,37% 210px;
+  background-position:0 0,0 52px,33.33% 52px,66.66% 52px,100% 52px,0 188px,100% 188px;
+}
+/* rooms = grid of tiles */
+.folder-area:has(.folder-tab.active[data-page="rooms"]) #page-content:is(:empty,.is-loading,[aria-busy="true"])::before{
+  background-image:var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk);
+  background-size:34% 26px,23.5% 128px,23.5% 128px,23.5% 128px,23.5% 128px,23.5% 128px,23.5% 128px,23.5% 128px,23.5% 128px;
+  background-position:0 0,0 52px,33.33% 52px,66.66% 52px,100% 52px,0 196px,33.33% 196px,66.66% 196px,100% 196px;
+}
+/* reports = stats + big chart */
+.folder-area:has(.folder-tab.active[data-page="reports"]) #page-content:is(:empty,.is-loading,[aria-busy="true"])::before{
+  background-image:var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk),var(--sx-sk);
+  background-size:34% 26px,31.5% 104px,31.5% 104px,31.5% 104px,100% 230px;
+  background-position:0 0,0 52px,50% 52px,100% 52px,0 188px;
+}
+/* light sweep across the skeleton */
+#page-content:is(:empty,.is-loading,[aria-busy="true"])::after{
+  content:"";position:absolute;top:0;left:-40%;width:35%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(199,164,243,.09),transparent);
+  transform:skewX(-18deg);animation:sx-sweep 1.8s ease-in-out infinite;
+}
+
+/* Utility classes you can drop into any markup / JS-rendered HTML */
+.skeleton,[data-skeleton]{
+  position:relative;overflow:hidden;color:transparent !important;border-radius:8px;
+  background:#1a1225 !important;animation:sx-skel 1.4s ease-in-out infinite;
+}
+.skeleton::after,[data-skeleton]::after{
+  content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(100deg,transparent,rgba(199,164,243,.1),transparent);
+  animation:sx-sweep 1.6s ease-in-out infinite;
+}
+.spinner,.loader,.loading-spinner{
+  display:inline-block;width:22px;height:22px;border-radius:50%;vertical-align:middle;
+  border:2px solid rgba(199,164,243,.22);border-top-color:var(--sx-accent);
+  animation:sx-spin .75s linear infinite;
+}
+.is-loading:not(button):not(.submit-btn):not(.primary-btn):not(.secondary-btn):not(.save-btn):not(.logout-btn){
+  opacity:.6;pointer-events:none;transition:opacity .3s;
+}
+
+/* ==========================================================================
+   LOGIN
+   ========================================================================== */
+.auth-container{animation:sx-authin .9s var(--sx-ease) backwards}
+.demo-badge{animation:sx-drop .6s .3s var(--sx-ease) backwards, sx-float 4s 1.2s ease-in-out infinite}
+.tagline{animation:sx-fade 1s .5s backwards}
+.tagline span{
+  background:linear-gradient(90deg,var(--sx-accent) 0%,var(--sx-text) 50%,var(--sx-accent) 100%);
+  background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;text-shadow:none;
+  animation:sx-textshine 4s linear infinite;
+}
+.form-panel{animation:sx-rise .8s .25s var(--sx-ease) backwards}
+
+.form-group{animation:sx-rise .6s var(--sx-ease) backwards}
+.form-group:nth-of-type(1){animation-delay:.10s}
+.form-group:nth-of-type(2){animation-delay:.18s}
+.form-group:nth-of-type(3){animation-delay:.26s}
+.form-group:nth-of-type(4){animation-delay:.34s}
+#loginForm .form-group:nth-of-type(1){animation-delay:.45s}
+#loginForm .form-group:nth-of-type(2){animation-delay:.55s}
+#loginForm .submit-btn{animation:sx-rise .6s .65s var(--sx-ease) backwards, sx-btnpulse 3.2s 1.6s ease-in-out infinite}
+#loginForm .submit-btn:hover,#loginForm .submit-btn:disabled{animation-name:none}
+.forgot-link{animation:sx-fade .8s .8s backwards}
+.auth-footer{animation:sx-fade .8s .95s backwards}
+
+.form-group label{transition:color .25s}
+.form-group:focus-within label{color:var(--sx-accent)}
+.input-wrap{transition:transform .3s var(--sx-ease)}
+.input-wrap:focus-within{transform:translateY(-2px)}
+.input-icon{transition:color .25s}
+.input-wrap:focus-within .input-icon{color:var(--sx-accent);animation:sx-nudge .4s ease}
+input,select,textarea{transition:border-color .25s,box-shadow .3s,background-color .25s}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(199,164,243,.18),0 8px 20px rgba(0,0,0,.35)}
+
+.toggle-eye{transition:transform .25s var(--sx-spring),color .2s}
+.toggle-eye:hover{transform:scale(1.18);color:var(--sx-accent)}
+.toggle-eye:active{transform:scale(.9)}
+
+.pin-dot{animation:sx-dot 1.8s ease-in-out infinite}
+.pin-dot:nth-child(2){animation-delay:.15s}
+.pin-dot:nth-child(3){animation-delay:.30s}
+.pin-dot:nth-child(4){animation-delay:.45s}
+
+.forgot-link{
+  background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;
+  transition:background-size .35s var(--sx-ease),color .25s;
+}
+.forgot-link:hover{background-size:100% 1px;color:var(--sx-accent)}
+
+.form-message.show{animation:sx-rise .35s var(--sx-ease)}
+.form-message.show.error{animation:sx-rise .3s var(--sx-ease), sx-shake .5s .1s ease}
+.message:not(:empty){animation:sx-rise .35s var(--sx-ease)}
+.message.error:not(:empty){animation:sx-rise .3s var(--sx-ease), sx-shake .5s .1s ease}
+
+/* ==========================================================================
+   PROFILE
+   ========================================================================== */
+.profile-summary{animation:sx-left .8s .15s var(--sx-ease) backwards}
+.profile-details{animation:sx-right .8s .25s var(--sx-ease) backwards}
+.profile-avatar{animation:sx-pop .8s .4s var(--sx-spring) backwards, sx-ring 3.2s 1.4s ease-out infinite}
+.profile-name{animation:sx-rise .6s .55s var(--sx-ease) backwards}
+.profile-email{animation:sx-rise .6s .62s var(--sx-ease) backwards}
+.profile-role{animation:sx-rise .6s .70s var(--sx-ease) backwards}
+.profile-status{animation:sx-rise .6s .78s var(--sx-ease) backwards}
+.profile-summary .logout-btn{animation:sx-rise .6s .86s var(--sx-ease) backwards}
+.status-dot{animation:sx-live 1.8s ease-out infinite}
+.details-head{animation:sx-fade .6s .4s backwards}
+
+.field{animation:sx-rise .5s var(--sx-ease) backwards;transition:transform .25s var(--sx-ease)}
+.field:nth-child(1){animation-delay:.40s}
+.field:nth-child(2){animation-delay:.46s}
+.field:nth-child(3){animation-delay:.52s}
+.field:nth-child(4){animation-delay:.58s}
+.field:nth-child(5){animation-delay:.64s}
+.field:nth-child(6){animation-delay:.70s}
+.field:hover{transform:translateY(-2px)}
+
+.fields{animation:sx-fade .4s ease}
+#editFormWrap{animation:sx-edit .45s var(--sx-ease)}
+#editFormWrap:is(.open,.show,.active){animation-name:sx-edit}
+
+/* ==========================================================================
+   CONTACT (only applies if you link animations.css in contact.php)
+   ========================================================================== */
+.contact-card{animation:sx-rise .6s var(--sx-ease) backwards}
+.contact-card:nth-child(2){animation-delay:.12s}
+.contact-card:hover{transform:translateY(-6px)}
+.avatar-ring{transition:transform .4s var(--sx-spring)}
+.contact-card:hover .avatar-ring{transform:scale(1.06) rotate(-3deg)}
 .detail-row:hover{transform:translateX(4px)}
-.detail-icon{transition:transform .3s var(--fx-spring)}
-.detail-row:hover .detail-icon{transform:rotate(-8deg) scale(1.12)}
-.field{transition:border-color .2s,transform .2s var(--fx-ease)}
-.field:hover{border-color:#5b3d78;transform:translateY(-2px)}
+.detail-row,.github-btn{transition:transform .25s var(--sx-ease),background .2s,border-color .2s,filter .2s,box-shadow .2s}
+.github-btn:hover{transform:translateY(-2px)}
 
-/* ---------- 8. Inputs ---------- */
-.form-group input,.form-group select,.input-wrap input,.login-card input,.section-search{
-  transition:border-color .2s,box-shadow .25s,transform .2s var(--fx-ease),background-color .2s;
+/* ==========================================================================
+   MORE LOADING FEEDBACK
+   ========================================================================== */
+@keyframes sx-shimmer-bg{to{background-position:-150% 0}}
+@keyframes sx-indeterminate{
+  0%{transform:translateX(-100%) scaleX(.35);opacity:1}
+  100%{transform:translateX(100%) scaleX(.35);opacity:1}
 }
-.form-group input:focus,.form-group select:focus,.input-wrap input:focus{transform:translateY(-1px)}
-.section-search:focus-within{box-shadow:0 0 0 3px #8755b522}
-.section-search input{transition:width .3s var(--fx-ease)}
-.section-search input:focus{width:240px}
-.input-wrap .input-icon{transition:color .2s,transform .25s var(--fx-spring)}
-.input-wrap:focus-within .input-icon{transform:scale(1.18)}
-.archive-toggle-thumb{transition:transform .3s var(--fx-spring),background-color .2s}
 
-/* ---------- 9. Overlays: dropdown, modals, toasts ---------- */
-.inbox-dropdown.open{transform-origin:top right;animation:fx-dropdown .22s var(--fx-ease)}
-.inbox-dropdown.open .inbox-item{animation:fx-slide-x .3s var(--fx-ease) backwards;animation-delay:calc(var(--i,0)*40ms + 80ms)}
-.modal-overlay.open{animation:fx-fade .2s ease}
-.modal{animation:fx-modal .3s var(--fx-spring)}
-.login-overlay.open{animation:fx-fade .2s ease}
-.login-card{animation:fx-modal .3s var(--fx-spring)}
-.toast{animation:fx-toast .35s var(--fx-spring)}
-.toast.out{transform:translateX(26px)}
+/* Shimmer pill for text slots that JS fills in later (only while still empty) */
+:is(.field-value,#today,.date,#summaryName,#summaryEmail,#summaryRole,#summaryStatus):empty::before{
+  content:"";display:block;width:62%;min-width:70px;max-width:180px;height:14px;border-radius:7px;
+  background:linear-gradient(100deg,#1a1225 30%,#352640 50%,#1a1225 70%) 0 0/250% 100%;
+  animation:sx-shimmer-bg 1.3s linear infinite;
+}
+#today:empty::before,.date:empty::before{display:inline-block;width:120px}
 
-/* ---------- 10. Reduced motion ---------- */
-/* base.css already shortens durations; this also stops loops and decoration. */
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-iteration-count:1!important}
-  body::before,body::after,.fx-ripple{display:none!important}
-  .stat-card,.contact-card,.profile-summary,.dash-card,.report-card{transform:none!important}
+/* The top bar loops while data is loading, then finishes with a sweep when it's done */
+html:has(:is(#page-content:is(:empty,.is-loading,[aria-busy="true"]),.submit-btn:disabled,button.is-loading,[aria-busy="true"]))::before{
+  animation:sx-indeterminate 1.1s ease-in-out infinite;
+}
+
+/* Press feedback while data is (re)loading */
+#loginForm:has(.submit-btn:disabled) .input-wrap{opacity:.55;pointer-events:none;transition:opacity .3s}
+body:has(#refreshBtn:active) #page-content{opacity:.5}
+#refreshBtn:active i{animation:sx-spin .6s linear}
+
+/* ==========================================================================
+   PAGE TRANSITIONS
+   1) Between real pages (login -> dashboard -> profile): browser view
+      transitions. Old page fades out + drifts up, new page fades in + glides up.
+   2) Between dashboard tabs: content fades out + lifts while you press the tab,
+      then the new content fades/rises in (see #page-content rules above).
+   ========================================================================== */
+@view-transition{navigation:auto}
+::view-transition{background:var(--bg,#0d0a12)}
+::view-transition-old(root){animation:sx-vt-out .3s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:sx-vt-in .5s var(--sx-ease) both}
+@keyframes sx-vt-out{to{opacity:0;transform:translateY(-16px)}}
+@keyframes sx-vt-in{from{opacity:0;transform:translateY(22px)}}
+
+/* The logo glides/morphs between pages (big on login, small in headers) */
+.brand-icon{view-transition-name:sx-logo}
+::view-transition-group(sx-logo){animation-duration:.6s;animation-timing-function:var(--sx-ease)}
+
+/* Tab switch fade-out */
+#page-content{transition:opacity .16s ease,transform .16s ease}
+.folder-area:has(.folder-tab:active) #page-content{opacity:0;transform:translateY(-8px)}
+
+/* ==========================================================================
+   SLIDE DOWN / SLIDE UP + FADE HELPERS
+   ========================================================================== */
+@keyframes sx-fadeout{to{opacity:0}}
+@keyframes sx-slidedown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes sx-slideup{to{opacity:0;transform:translateY(-14px)}}
+
+/* <details> opens by sliding down and closes by sliding up */
+:root{interpolate-size:allow-keywords}
+details::details-content{height:0;overflow:clip;transition:height .4s var(--sx-ease),content-visibility .4s allow-discrete}
+details[open]::details-content{height:auto}
+details > summary{cursor:pointer;transition:color .2s}
+details[open] > summary{color:var(--sx-accent)}
+@supports not selector(::details-content){
+  details[open] > :not(summary){animation:sx-slidedown .35s var(--sx-ease)}
+}
+
+/* Smooth collapsible panel: wrap content in a single child, toggle .open */
+.sx-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .4s var(--sx-ease),opacity .3s}
+.sx-collapse > *{overflow:hidden;min-height:0}
+.sx-collapse:is(.open,.is-open,.show){grid-template-rows:1fr;opacity:1}
+
+/* Drop-in helper classes */
+.sx-fade-in{animation:sx-fade .4s ease both}
+.sx-fade-out{animation:sx-fadeout .3s ease both}
+.sx-slide-down{animation:sx-slidedown .4s var(--sx-ease) both}
+.sx-slide-up{animation:sx-slideup .35s var(--sx-ease) both}
+
+/* ==========================================================================
+   ACCESSIBILITY — respect "reduce motion"
+   ========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none !important}
+  *,*::before,*::after{
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    animation-delay:0s !important;transition-duration:.01ms !important;scroll-behavior:auto !important;
+  }
 }
