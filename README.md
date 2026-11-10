@@ -105,6 +105,7 @@ Visit [http://localhost/solmbra](http://localhost/solmbra) in your browser. The 
 
 ## 📷 Screenshots
 
+<<<<<<< HEAD
 ### Dashboard
 <img src="assets/img/Dashboard.png" alt="Dashboard Tab" width="100%"/>
 
@@ -137,3 +138,21 @@ Visit [http://localhost/solmbra](http://localhost/solmbra) in your browser. The 
 - Ruiz, Iesha Katriel
 - Kintanar, Francis Matteo C.
 - Yase, Harvey Gabriele S.
+=======
+1.Dashboard
+<img width="1920" height="1080" alt="Dashboard" src="assets/img/Dashboard.png" alt="Dashboard Tab"/>
+2.Reservation
+<img width="1920" height="1080" alt="Reservations" src="assets/img/Reservations.png" alt="Reservation Tab"/>
+3.Rooms
+<img width="1920" height="1080" alt="Rooms" src="assets/img/Rooms.png" alt="Rooms Tab"/>
+4.Guests
+<img width="1920" height="1080" alt="Guests" src="assets/img/Guests.png" alt="Guests Tab"/>
+5.Staff
+<img width="1920" height="1080" alt="Staff" src="assets/img/Staff.png" alt="Staff Tab"/>
+6.Payments
+<img width="1920" height="1080" alt="Payments" src="assets/img/Payments.png" alt="Payments Tab"/>
+7.Reports
+<img width="1920" height="1080" alt="Reports" src="assets/img/Reports.png" alt="Reports Tab"/>
+8.Account
+<img width="1920" height="1080" alt="Account" src="assets/img/Account.png" alt="Account Tab"/>
+>>>>>>> 45f50229fe34bcd99e374cc6ec881002a4d7fbca
