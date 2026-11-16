@@ -10,11 +10,11 @@ $u = require_login();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0d0a12">
+<meta name="theme-color" content="#0D0E20">
 <title>SOLMBRA | Hotel Management</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="assets/css/base.css?v=99">
-<link rel="stylesheet" href="assets/css/dashboard.css?v=99">
+<link rel="stylesheet" href="assets/css/base.css?v=100">
+<link rel="stylesheet" href="assets/css/dashboard.css?v=100">
 <link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body>
@@ -69,13 +69,49 @@ $u = require_login();
   <footer><span>© 2026 SOLMBRA HOTEL</span><span>YOUR SPACE. YOUR SYSTEM.</span></footer>
 </div>
 
-<!-- Includes all 7 modals + the toast stack. Do NOT add another toast-stack below. -->
+<!-- ============ CALENDAR MODAL ============ -->
+<div class="modal-overlay" id="calendarModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h2><i class="fas fa-calendar-alt"></i> Property Calendar</h2>
+      <button class="modal-close" data-close="calendarModal">&times;</button>
+    </div>
+    <div class="calendar-header">
+      <button class="mini-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+      <h3 id="calendarMonthYear">Month Year</h3>
+      <button class="mini-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- JS generates the grid -->
+    </div>
+    <div class="cal-legend">
+      <span><div class="cal-dot checkin"></div> Check-in</span>
+      <span><div class="cal-dot checkout"></div> Check-out</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CALENDAR DAY DETAILS MODAL (TENANTS) ============ -->
+<div class="modal-overlay" id="calendarDayModal">
+  <div class="modal tenant-modal">
+    <div class="modal-header">
+      <h2><i class="fas fa-users"></i> <span id="dayModalTitle">Tenants for Date</span></h2>
+      <button class="modal-close" data-close="calendarDayModal">&times;</button>
+    </div>
+    <div class="cal-details" id="calendarDayDetailsContent">
+      <!-- Details injected via JS -->
+    </div>
+  </div>
+</div>
+
+<!-- Includes all 7 original modals + the toast stack. -->
 <?php include __DIR__ . '/includes/modals.php'; ?>
 
 <script src="assets/js/util.js"></script>
 <script src="assets/js/notifications.js"></script>
-<script src="assets/js/dashboard.js?v=99"></script>
+<script src="assets/js/dashboard.js?v=100"></script>
 <script src="assets/js/interactions.js" defer></script>
 
 </body>
+</html>
 </html>
