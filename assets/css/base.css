@@ -1,22 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root{
-  --bg:#0d0a12;--surface:#130e1c;--purple:#58327b;--purple-light:#8755b5;
-  --accent:#c7a4f3;--text:#f4eff9;--muted:#a69bb2;--border:#352640;
-  --success:#8de0b8;--warning:#e9c18b;--danger:#ff9da9;
+  /* --- NEW PURPLE THEME PALETTE --- */
+  --bg: #0D0E20;             /* Chinese Black */
+  --surface: #2D1C7F;        /* Persian Indigo */
+  --purple: #7646E8;         /* Majorelle Blue */
+  --purple-light: #8c63f0;   /* Lighter Majorelle */
+  --accent: #CBB3F6;         /* Vodka */
+  --text: #FFFFFF;           /* White for max readability */
+  --muted: #BDA9E5;          /* Max Blue Purple */
+  --border: rgba(189, 169, 229, 0.2); /* Transparent Max Blue Purple */
+  --success: #8de0b8;
+  --warning: #e9c18b;
+  --danger: #ff9da9;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* Static Background — identical to original */
+/* Static Background with New Palette Glows */
 body{
   min-height:100vh;
   overflow-x:hidden;
   background-color:var(--bg);
   background-image:
-    radial-gradient(ellipse at 18% 24%, #512b72 0%, transparent 45%),
-    radial-gradient(ellipse at 82% 36%, #34204e 0%, transparent 45%),
-    radial-gradient(ellipse at 55% 88%, #271638 0%, transparent 45%);
+    radial-gradient(ellipse at 18% 24%, rgba(45, 28, 127, 0.6) 0%, transparent 45%), /* Persian Indigo */
+    radial-gradient(ellipse at 82% 36%, rgba(118, 70, 232, 0.3) 0%, transparent 45%), /* Majorelle Blue */
+    radial-gradient(ellipse at 55% 88%, rgba(13, 14, 32, 0.8) 0%, transparent 45%); /* Chinese Black */
   background-attachment:fixed;
   background-size:cover;
   color:var(--text);
