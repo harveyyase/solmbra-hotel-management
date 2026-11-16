@@ -7,6 +7,10 @@ const searchState = {reservations:'', rooms:'', guests:'', staff:'', payments:''
 const archiveState = {reservations:false, guests:false, payments:false, staff:false};
 let currentSection = 'dashboard';
 
+// --- Calendar State ---
+let currentCalendarDate = new Date();
+let selectedCalendarDate = null;
+
 async function bootstrap() {
   const { ok, data } = await api('bootstrap');
   if (!ok) { toast('Could not load data.', 'danger'); return; }
@@ -17,8 +21,6 @@ async function bootstrap() {
   document.getElementById('today').textContent = todayObj.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
   document.getElementById('profileInitial').textContent = (STATE.user.name || 'A')[0].toUpperCase();
   
-  // Remember current tab, default to dashboard
-  // Check the URL hash first, then fallback to dashboard
   const hashPage = window.location.hash.replace('#', '');
   const validPages = ['dashboard', 'reservations', 'rooms', 'guests', 'staff', 'payments', 'reports'];
   
@@ -56,7 +58,7 @@ function pageSlice(items, section) {
 }
 function searchBox(section, placeholder) {
   return `<div class="section-search ${searchState[section] ? 'has-value' : ''}" id="search-${section}">
-    <i class="fas fa-search" style="color:#8b7d9c;font-size:11px"></i>
+    <i class="fas fa-search" style="color:var(--muted);font-size:11px"></i>
     <input type="text" id="${section}SearchInput" placeholder="${placeholder}" value="${esc(searchState[section])}" />
     <button class="section-search-clear" data-clear="${section}" title="Clear"><i class="fas fa-times"></i></button>
   </div>`;
@@ -88,7 +90,7 @@ function renderDashboard() {
   return `
   <div class="folder-heading">
     <div><h3>Welcome back, <span id="greetingName">${esc(STATE.user.name)}</span>.</h3><p>Here's what's happening at SOLMBRA today.</p></div>
-    <span class="pill">✦ Live property overview</span>
+    <button class="pill-btn" id="openCalendarBtn"><i class="fas fa-calendar-alt"></i> Live Property Calendar</button>
   </div>
   <div class="stats">
     <div class="stat-card"><span class="stat-icon">▣</span><div class="stat-label">Total Rooms</div><div class="stat-value">${rooms.length}</div><div class="stat-change">${available} available</div></div>
@@ -227,6 +229,93 @@ async function renderReports() {
   </div>`;
 }
 
+// ---------- CALENDAR LOGIC ----------
+function renderCalendar() {
+  const y = currentCalendarDate.getFullYear();
+  const m = currentCalendarDate.getMonth();
+  
+  document.getElementById('calendarMonthYear').textContent = currentCalendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  
+  let html = '';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => html += `<div class="cal-dow">${d}</div>`);
+  
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="cal-day empty"></div>`;
+  }
+  
+  const todayStr = STATE.today;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === todayStr;
+    const isSelected = dateStr === selectedCalendarDate;
+    
+    // Using PHP data: check_in, check_out, status, archived
+    const checkins = STATE.reservations.filter(r => r.check_in === dateStr && r.status !== 'Cancelled' && !r.archived);
+    const checkouts = STATE.reservations.filter(r => r.check_out === dateStr && r.status !== 'Cancelled' && !r.archived);
+    
+    let dots = '';
+    if (checkins.length) dots += `<div class="cal-dot checkin" title="${checkins.length} check-in(s)"></div>`;
+    if (checkouts.length) dots += `<div class="cal-dot checkout" title="${checkouts.length} check-out(s)"></div>`;
+    
+    html += `<div class="cal-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" data-date="${dateStr}">
+      <span>${d}</span>
+      <div class="cal-dots">${dots}</div>
+    </div>`;
+  }
+  
+  document.getElementById('calendarGrid').innerHTML = html;
+}
+
+function openDayDetailsModal(dateStr) {
+  const checkins = STATE.reservations.filter(r => r.check_in === dateStr && r.status !== 'Cancelled' && !r.archived);
+  const checkouts = STATE.reservations.filter(r => r.check_out === dateStr && r.status !== 'Cancelled' && !r.archived);
+
+  document.getElementById('dayModalTitle').innerHTML = `<i class="fas fa-calendar-day"></i> ${fmtDate(dateStr)}`;
+
+  if (!checkins.length && !checkouts.length) {
+    document.getElementById('calendarDayDetailsContent').innerHTML = `
+      <p class="cal-details-empty">No check-ins or check-outs scheduled for this date.</p>
+    `;
+    openModal('calendarDayModal');
+    return;
+  }
+
+  let itemsHtml = '';
+
+  checkins.forEach(r => {
+    itemsHtml += `
+      <div class="cal-detail-item">
+        <div class="info">
+          <span class="name">${esc(r.guest)}</span>
+          <span class="room">Room ${esc(r.room)} · Status: ${esc(r.status)}</span>
+        </div>
+        <span class="cal-detail-badge in">IN</span>
+      </div>
+    `;
+  });
+
+  checkouts.forEach(r => {
+    itemsHtml += `
+      <div class="cal-detail-item">
+        <div class="info">
+          <span class="name">${esc(r.guest)}</span>
+          <span class="room">Room ${esc(r.room)} · Status: ${esc(r.status)}</span>
+        </div>
+        <span class="cal-detail-badge out">OUT</span>
+      </div>
+    `;
+  });
+
+  document.getElementById('calendarDayDetailsContent').innerHTML = `
+    <div class="cal-detail-list">${itemsHtml}</div>
+  `;
+  
+  openModal('calendarDayModal');
+}
+
 // ---------- ROUTER ----------
 const content = document.getElementById('page-content');
 const renderers = {dashboard: renderDashboard, reservations: renderReservations, rooms: renderRooms, guests: renderGuests, staff: renderStaff, payments: renderPayments, reports: renderReports};
@@ -235,7 +324,6 @@ const heroLabels = {dashboard:'New Reservation', reservations:'New Reservation',
 async function navigate(page) {
   if (!renderers[page]) return;
   currentSection = page;
-  // Save the page in the URL hash
   if (window.location.hash !== '#' + page) {
     history.replaceState(null, null, '#' + page);
   }
@@ -454,6 +542,15 @@ document.getElementById('confirmBtn').addEventListener('click', () => {
 
 // ---------- EVENT DELEGATION ----------
 content.addEventListener('click', async e => {
+  const openCal = e.target.closest('#openCalendarBtn');
+  if (openCal) {
+    currentCalendarDate = new Date();
+    selectedCalendarDate = null;
+    renderCalendar();
+    openModal('calendarModal');
+    return;
+  }
+
   const actionEl = e.target.closest('[data-action]');
   if (!actionEl) {
     if (e.target.closest('[data-quick="reservation"]')) return openReservationModal();
@@ -561,7 +658,6 @@ document.querySelectorAll('.folder-tab').forEach(t => t.addEventListener('click'
 document.getElementById('refreshBtn').addEventListener('click', bootstrap);
 document.getElementById('exportBtn').addEventListener('click', () => {
   toast('Preparing export...');
-  // We use window.open to trigger the download without navigating away from the page
   window.open(`api/index.php?action=export.csv&section=${currentSection}`, '_blank');
 });
 
@@ -572,6 +668,25 @@ document.getElementById('heroActionBtn').addEventListener('click', () => {
   if (currentSection === 'staff') openStaffModal();
   if (currentSection === 'payments') openPaymentModal();
   if (currentSection === 'reports') toast('Export feature is in the top-right button.', 'warn');
+});
+
+// Calendar Event Listeners
+document.getElementById('prevMonthBtn')?.addEventListener('click', () => {
+  currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+  selectedCalendarDate = null;
+  renderCalendar();
+});
+document.getElementById('nextMonthBtn')?.addEventListener('click', () => {
+  currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+  selectedCalendarDate = null;
+  renderCalendar();
+});
+document.getElementById('calendarGrid')?.addEventListener('click', e => {
+  const dayEl = e.target.closest('.cal-day');
+  if (!dayEl || dayEl.classList.contains('empty') || !dayEl.dataset.date) return;
+  selectedCalendarDate = dayEl.dataset.date;
+  renderCalendar();
+  openDayDetailsModal(selectedCalendarDate);
 });
 
 // Boot
