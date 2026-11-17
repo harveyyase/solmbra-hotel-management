@@ -56,3 +56,27 @@ a{color:inherit;text-decoration:none}
     scroll-behavior:auto!important;
   }
 }
+
+/* ================= LOADING SCREEN ================= */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg); /* Uses your Chinese Black variable */
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease-in-out;
+  opacity: 1;
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-screen img {
+  width: 250px;
+  max-width: 80vw;
+  object-fit: contain;
+}
