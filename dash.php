@@ -3,7 +3,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/auth.php';
 
-$u = require_login();
+// TEMPORARY DEVELOPMENT ACCESS
+$u = [
+    'display_name' => 'Developer'
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,8 +32,8 @@ $u = require_login();
   <header>
   <!-- rest of your dashboard... -->
 
-<div class="app">
-  <header>
+
+
     <div class="brand">
       <div class="brand-icon"><img src="assets/img/logo.png" alt="SOLMBRA" /></div>
       <div><h1>SOLMBRA</h1><p>HOTEL MANAGEMENT</p></div>
@@ -121,7 +124,8 @@ $u = require_login();
 <script src="assets/js/notifications.js"></script>
 <script src="assets/js/dashboard.js?v=100"></script>
 <script src="assets/js/interactions.js" defer></script>
-
+<script src="assets/js/loader.js" defer></script>
 </body>
+
 </html>
 </html>
