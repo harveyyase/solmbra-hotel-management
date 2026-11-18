@@ -20,3 +20,11 @@ loginForm.addEventListener('submit', e => {
   loginBtn.classList.add('loading');
   loginBtn.disabled = true;
 });
+/* ================= LOADING SCREEN TIMING ================= */
+setTimeout(() => {
+  const loader = document.getElementById('loadingScreen');
+  if (loader) {
+    loader.classList.add('hidden');
+    setTimeout(() => loader.remove(), 800);
+  }
+}, 4500);
