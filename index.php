@@ -30,14 +30,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0d0a12">
+<meta name="theme-color" content="#0D0E20">
 <title>SOLMBRA | Login</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="assets/css/base.css">
-<link rel="stylesheet" href="assets/css/login.css">
+<link rel="stylesheet" href="assets/css/base.css?v=100">
+<link rel="stylesheet" href="assets/css/login.css?v=100">
 <link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;">
+
+<!-- ============ LOADING SCREEN ============ -->
+<div class="loading-screen" id="loadingScreen">
+  <img src="https://raw.githubusercontent.com/CHROMAPSTR/GRAPHIC-DESIGNS/refs/heads/main/Untitled%20design%20(2).gif" alt="Loading..." />
+</div>
 
 <div class="auth-container">
   <div class="demo-badge"><i class="fas fa-shield-alt"></i> Secure Login</div>
@@ -89,7 +94,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </div>
 
-<script src="assets/js/login.js"></script>
+<script src="assets/js/login.js?v=100"></script>
 <script src="assets/js/interactions.js" defer></script>
+
+<!-- ============ LOADING SCREEN TIMER ============ -->
+<script>
+  // Wait 4.5 seconds, then trigger the fade out transition
+  setTimeout(() => {
+    const loader = document.getElementById('loadingScreen');
+    if (loader) {
+      loader.classList.add('hidden');
+      // Remove from DOM after the 0.8s fade-out transition finishes
+      setTimeout(() => loader.remove(), 800);
+    }
+  }, 4500);
+</script>
+
 </body>
 </html>
