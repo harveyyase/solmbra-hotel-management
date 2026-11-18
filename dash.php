@@ -18,6 +18,16 @@ $u = require_login();
 <link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body>
+  
+
+<!-- ============ LOADING SCREEN ============ -->
+<div class="loading-screen" id="loadingScreen">
+  <img src="https://raw.githubusercontent.com/CHROMAPSTR/GRAPHIC-DESIGNS/refs/heads/main/Untitled%20design%20(2).gif" alt="Loading..." />
+</div>
+
+<div class="app">
+  <header>
+  <!-- rest of your dashboard... -->
 
 <div class="app">
   <header>
