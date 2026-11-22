@@ -125,7 +125,26 @@ document.addEventListener('click', () => {
 });
 
 // CHANGED 
-setInterval(() => { if (!document.hidden) loadNotifications(); }, 30000);
+setInterval(() => { if (!document.hidden) loadNotifications(); }, 10000);
+
+// NEW: refresh when returning to the tab
+document.addEventListener('visibilitychange', () => { if (!document.hidden) loadNotifications(); });
+
+// NEW: refresh the bell after any POST (delete, archive, confirm...)
+(function () {
+  if (typeof window.api !== 'function') return;
+  const originalApi = window.api;
+  let refreshTimer;
+  window.api = async function (...args) {
+    const result = await originalApi.apply(this, args);
+    const action = String(args[0] || '');
+    if (args[2] === 'POST' && !action.startsWith('notifications.')) {
+      clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(loadNotifications, 400);
+    }
+    return result;
+  };
+})();
 
 
 // attached its tab click handlers first.
