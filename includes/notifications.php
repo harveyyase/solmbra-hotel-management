@@ -11,9 +11,9 @@ function notif_add(?int $uid, string $kind, string $title, string $detail = '', 
 function notif_sync(): void {
     $pdo = db();
 
-    // delete notifications whose reservation/guest was removed or archived
+    // NEW: delete notifications whose reservation/guest was removed or archived
     $pdo->exec("DELETE FROM notifications
-                WHERE kind = 'pending_reservation'
+                WHERE entity = 'reservation'
                   AND NOT EXISTS (
                     SELECT 1 FROM reservations r
                     JOIN guests g ON g.id = r.guest_id
@@ -22,7 +22,7 @@ function notif_sync(): void {
 
     // NEW: delete notifications whose payment/guest was removed, archived or voided
     $pdo->exec("DELETE FROM notifications
-                WHERE kind = 'payment_due'
+                WHERE entity = 'payment'
                   AND NOT EXISTS (
                     SELECT 1 FROM payments p
                     JOIN guests g ON g.id = p.guest_id
@@ -37,8 +37,6 @@ function notif_sync(): void {
                     WHERE CAST(r.id AS TEXT) = notifications.entity_id
                       AND r.status = 'Pending')");
 
-    // Payment no longer Pending/Overdue (e.g. Paid) AND never opened is removed. 
-    // (Already-opened ones are left alone and stay as dimmed history.)
     $pdo->exec("UPDATE notifications SET read_at = datetime('now'), dismissed = 1
                 WHERE kind = 'payment_due' AND read_at IS NULL
                   AND NOT EXISTS (
@@ -46,7 +44,7 @@ function notif_sync(): void {
                     WHERE CAST(p.id AS TEXT) = notifications.entity_id
                       AND p.status IN ('Pending','Overdue'))");
 
-    
+    // drop read notifications older than 30 days
     $pdo->exec("DELETE FROM notifications
                 WHERE read_at IS NOT NULL AND read_at < datetime('now','-30 days')");
 }
@@ -57,7 +55,7 @@ function notif_derive(int $uid, string $role): void {
     $today = (new DateTimeImmutable('today'))->format('Y-m-d');
     $soon  = (new DateTimeImmutable('today +3 days'))->format('Y-m-d');
 
-    // Check if ANY notification exists for this entity (even if it's already read/dismissed)
+    // Check if ANY notification exists for this entity 
     $existing = $pdo->prepare("SELECT 1 FROM notifications WHERE kind = ? AND entity_id = ? LIMIT 1");
 
     // Pending reservations checking in soon
@@ -80,7 +78,6 @@ function notif_derive(int $uid, string $role): void {
     foreach ($st->fetchAll() as $p) {
         $existing->execute(['payment_due', $p['id']]);
         if (!$existing->fetch()) {
-            
             notif_add($uid, 'payment_due', "Payment {$p['id']} — {$p['name']}",
                       '₱' . number_format((float)$p['amount']) . " · {$p['method']}", 'payment', (string)$p['id']);
         }
@@ -115,6 +112,5 @@ function notif_mark_read(int $uid, ?int $id = null): void {
 }
 
 function notif_clear(int $uid): void {
-    
     db()->prepare("UPDATE notifications SET dismissed=1 WHERE user_id IS NULL OR user_id = ?")->execute([$uid]);
 }
