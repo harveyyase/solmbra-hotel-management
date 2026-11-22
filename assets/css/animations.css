@@ -200,7 +200,7 @@ body::before{
 .inbox-header button{transition:transform .2s,color .2s}
 .inbox-header button:hover{transform:scale(1.06);color:var(--sx-accent)}
 .inbox-list:empty::before{
-  content:"You're all caught up ✨";display:block;padding:28px 16px;text-align:center;
+  content:"You have no pending notifications.";display:block;padding:28px 16px;text-align:center;
   font-size:12px;color:var(--sx-muted);animation:sx-fade .6s ease;
 }
 
