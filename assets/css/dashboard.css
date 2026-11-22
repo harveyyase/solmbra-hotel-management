@@ -385,3 +385,31 @@ footer{display:flex;justify-content:space-between;gap:12px;margin-top:18px;color
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* ============================================================
+   NEW: NOTIFICATION STYLES (unread dot, opened notifications dimming, status badge)
+   ============================================================ */
+
+.inbox-item{display:flex;align-items:flex-start;gap:10px}
+.inbox-item .notif-body{flex:1;min-width:0}
+
+/* NEW: unread = blue dot */
+.inbox-item .notif-dot{flex:0 0 8px;width:8px;height:8px;margin-top:5px;border-radius:50%;background:transparent}
+.inbox-item.unread .notif-dot{background:#60a5fa}
+.inbox-item.read{opacity:.55}
+.inbox-item.read strong{font-weight:500}
+.inbox-item.read:hover{opacity:.85}
+
+/* NEW: status badge (Pending / Paid / Overdue / Confirmed / Checked in) */
+.inbox-item .notif-status{flex:0 0 auto;align-self:center;margin-top:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600;white-space:nowrap}
+.inbox-item .notif-status--pending{background:rgba(233,193,139,.15);color:var(--warning)}
+.inbox-item .notif-status--paid,
+.inbox-item .notif-status--confirmed{background:rgba(141,224,184,.15);color:var(--success)}
+.inbox-item .notif-status--overdue,
+.inbox-item .notif-status--cancelled{background:rgba(255,157,169,.15);color:var(--danger)}
+.inbox-item .notif-status--checkedin{background:rgba(118,70,232,.2);color:var(--accent)}
+
+.inbox-list{overscroll-behavior:contain}
+
+.row-highlight{animation:rowFlash 3s ease}
+@keyframes rowFlash{0%,60%{background:rgba(118,70,232,.4)}100%{background:transparent}}
